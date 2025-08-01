@@ -9,13 +9,23 @@ Calculate state holidays on the fly
 gleam add feiertag@1
 ```
 ```gleam
-import feiertag
+import feiertag.{Austria}
 import gleam/io
 
 pub fn main() {
-    io.println("is x-mas a state holiday?")
-    assert Ok("Christtag") == feiertag.get_holiday(feiertag.Austria, 2025, 12, 25)
-    io.println("yes!!! x-mas is a state holiday in austria <3")
+  io.println("is x-mas a state holiday in austria?")
+
+  case feiertag.is_holiday(Austria, 2025, 12, 25) {
+    True -> io.println("yes!!! x-mas is a holiday :D")
+    False -> io.println("no :( x-mas is not a holiday")
+  }
+
+  io.println("how is x-mas called in austria?")
+
+  case feiertag.get_holiday(Austria, 2025, 12, 25) {
+    Ok(name) -> io.println("the austrian people call x-mas: " <> name)
+    Error(_) -> io.println("we have zero idea what the austrians say or do :/")
+  }
 }
 ```
 
