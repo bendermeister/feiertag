@@ -54,15 +54,37 @@ fn from_ordinal(ordinal: Ordinal) -> #(Int, Int, Int) {
 }
 
 fn ordinal_add(ordinal: Ordinal, days: Int) -> Ordinal {
-  assert ordinal.ordinal + days < 367
   Ordinal(year: ordinal.year, ordinal: ordinal.ordinal + days)
 }
 
+/// checks if a given date is a state holiday in `Country`
+///
+/// # Returns
+/// - `True` -> given date is a state holiday in the given country
+/// - `False` -> given date is not a state holiday in the given country
+///
+/// # Examples
+/// ```gleam
+/// assert True == is_holiday(Austria, 2025, 12, 25)
+/// assert False == is_holiday(Austria, 2025, 11, 20)
+/// ```
 pub fn is_holiday(country: Country, year: Int, month: Int, day: Int) -> Bool {
   get_holiday(country, year, month, day)
   |> result.is_ok()
 }
 
+/// get the name of a holiday
+///
+/// # Returns
+/// `Ok(name)` -> given date is a state holiday in the given country and the holiday is called `name`
+/// `Error(Nil)` -> given date is not a state holiday
+///
+/// # Examples
+/// ```gleam
+/// assert Ok("Christtag") == get_holiday(Austria, 2025, 12, 25)
+/// assert Ok("Stefanitag") == get_holiday(Austria, 2025, 12, 26)
+/// assert Error(Nil) == get_holiday(Austria, 2025, 12, 20)
+/// ```
 pub fn get_holiday(
   country: Country,
   year: Int,
@@ -74,6 +96,17 @@ pub fn get_holiday(
   |> result.map(fn(h) { h.1 })
 }
 
+/// get all state holidays in a year for a country
+///
+/// # Returns
+/// - `[#(#(year, month, day), name), ..]`
+///
+/// # Examples
+/// ```gleam
+/// assert Ok(#(#(2025, 1, 1), "Neujahr"))
+/// == get_holidays(Austria, 2025)
+/// |> list.first()
+/// ```
 pub fn get_holidays(
   country: Country,
   year: Int,
